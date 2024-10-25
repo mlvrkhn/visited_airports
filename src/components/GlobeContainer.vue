@@ -1,8 +1,12 @@
 <template>
   <div class="globe-container">
-    <SearchBar @search="handleSearch" />
-    <div class="globe">
-    <GlobeCanvas />
+    <div class="content-wrapper">
+      <div class="search-bar-container">
+        <SearchBar @search="handleSearch" />
+      </div>
+      <div class="globe">
+        <GlobeCanvas />
+      </div>
     </div>
     <Marker v-for="airport in airports" :key="airport.id" :airport="airport" />
     <AirportInfoPanel :selectedAirport="selectedAirport" />
@@ -13,7 +17,6 @@
 import SearchBar from './SearchBar.vue'
 import Marker from './GlobeMarker.vue'
 import AirportInfoPanel from './AirportInfoPanel.vue'
-import countries from '@/assets/countries-110m.json' // Import countries data
 import GlobeCanvas from './GlobeCanvas.vue'
 export default {
   name: 'GlobeContainer',
@@ -27,19 +30,6 @@ export default {
     return {
       airports: [],
       selectedAirport: null,
-      // world: {
-      //   type: "Topology",
-      //   objects: {
-      //     countries: countries, // Use imported countries data
-      //     land: {}
-      //   },
-      //   arcs: [],
-      //   bbox: [-180, -85.60903777459771, 180, 83.64513000000001],
-      //   transform: {
-      //     scale: [],
-      //     translate: []
-      //   }
-      // }
     }
   },
   methods: {
@@ -56,10 +46,46 @@ export default {
   position: relative;
   width: 100%;
   height: 100vh;
+  overflow: hidden;
+}
+
+.content-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.search-bar-container {
+  padding: 0 20px;
 }
 
 .globe {
+  flex-grow: 1;
   width: 100%;
-  height: 100%;
+}
+
+@media (min-width: 768px) {
+  .content-wrapper {
+    flex-direction: row;
+  }
+
+  .search-bar-container {
+    width: 30%;
+  }
+
+  .globe {
+    width: 70%;
+  }
+}
+
+@media (max-width: 767px) {
+  .content-wrapper {
+    flex-direction: column;
+  }
+
+  .search-bar-container {
+    padding: 20px 0;
+  }
 }
 </style>

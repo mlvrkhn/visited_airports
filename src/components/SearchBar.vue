@@ -26,9 +26,8 @@ export default {
 
 <style scoped>
 .search-bar {
-  position: absolute;
-  top: 20px;
-  left: 20px;
+  position: relative;
+  margin: 20px;
   z-index: 10;
 }
 
