@@ -4,9 +4,7 @@
       <div class="search-bar-container">
         <SearchBar @search="handleSearch" />
       </div>
-      <div class="globe">
-        <GlobeCanvas />
-      </div>
+        <GlobeCanvas class="globe" />
     </div>
     <Marker v-for="airport in airports" :key="airport.id" :airport="airport" />
     <AirportInfoPanel :selectedAirport="selectedAirport" />
@@ -63,6 +61,10 @@ export default {
 .globe {
   flex-grow: 1;
   width: 100%;
+  max-width: 100%;
+  max-height: 100vh;
+  /* Add this to ensure it can shrink */
+  flex-shrink: 1;
 }
 
 @media (min-width: 768px) {
@@ -86,6 +88,12 @@ export default {
 
   .search-bar-container {
     padding: 20px 0;
+  }
+
+  .globe {
+    max-height: 70vh;
+    /* Ensure it can shrink */
+    flex-shrink: 1;
   }
 }
 </style>

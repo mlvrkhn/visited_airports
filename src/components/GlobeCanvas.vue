@@ -14,6 +14,7 @@ export default {
   },
   mounted() {
     this.initGlobe();
+    window.addEventListener('resize', this.onResize);
   },
   data() {
     return {
@@ -27,12 +28,18 @@ export default {
       easeFactor: 0.2,
       releaseTime: null,
       spinDuration: 1000, // 1 second in milliseconds
+      canvasWidth: 0,
+      canvasHeight: 0,
     };
   },
   methods: {
     initGlobe() {
-      const width = this.$refs.globeContainer.clientWidth;
-      const height = Math.min(width, 720);
+      // Clear existing canvas
+      this.$refs.globeContainer.innerHTML = '';
+
+      this.updateCanvasSize();
+      const width = this.canvasWidth;
+      const height = this.canvasHeight;
 
       const dpr = window.devicePixelRatio ?? 1;
       const canvas = d3.create("canvas")
@@ -48,7 +55,8 @@ export default {
       // Add drag behavior
       this.dragBehavior = d3.drag()
         .on('start', this.dragStart)
-        .on('drag', this.dragged);
+        .on('drag', this.dragged)
+        .on('end', this.dragEnd);
 
       canvas.call(this.dragBehavior);
 
@@ -101,6 +109,13 @@ export default {
       this.$refs.globeContainer.appendChild(canvas.node());
     },
 
+    updateCanvasSize() {
+      const width = this.$refs.globeContainer.clientWidth;
+      const height = Math.min(width, window.innerHeight * 0.8); // Adjust height dynamically
+      this.canvasWidth = width;
+      this.canvasHeight = height;
+    },
+
     dragStart(event) {
       this.isDragging = true;
       this.dragVelocity = [0, 0];
@@ -130,11 +145,17 @@ export default {
       // Set initial velocity after release based on drag velocity
       this.velocity = [...this.dragVelocity];
     },
+
+    onResize() {
+      this.updateCanvasSize();
+      this.initGlobe(); // Reinitialize globe with new dimensions
+    },
   },
   beforeUnmount() {
     if (this.animationId) {
       cancelAnimationFrame(this.animationId);
     }
+    window.removeEventListener('resize', this.onResize);
   }
 }
 </script>
@@ -143,5 +164,6 @@ export default {
 div {
   width: 100%;
   height: 100%;
+  max-height: 80vh; /* Limit height to 80% of viewport height */
 }
 </style>
